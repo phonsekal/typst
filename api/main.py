@@ -8,7 +8,9 @@ from fastapi import FastAPI, HTTPException, Form
 from fastapi.responses import Response, HTMLResponse
 from openai import OpenAI
 
-os.environ["TYPST_CACHE_DIR"] = "/tmp/typst_cache"
+CACHE_DIR = Path("/tmp/typst_cache")
+CACHE_DIR.mkdir(parents=True, exist_ok=True)
+os.environ["TYPST_CACHE_DIR"] = str(CACHE_DIR)
 
 app = FastAPI()
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
