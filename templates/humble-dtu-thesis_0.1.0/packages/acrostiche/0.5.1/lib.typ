@@ -65,7 +65,8 @@
       }
 
       // The Definition is an array ============
-      else if type(defs) == array{
+      else {
+  if type(defs) == array {
         if defs.len() == 0{ // The user could have provided an empty array, unlikely but possible.
           panic("No definitions found for acronym "+acr+". Make sure it is defined in the dictionary passed to #init-acronyms(dict)")
         }else if defs.len() == 1{ // User provided only one version, we make the plural by adding an "s" at the end.
