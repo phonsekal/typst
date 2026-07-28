@@ -9,7 +9,7 @@ from openai import OpenAI
 app = FastAPI(title="Typst AI Generator (OpenAI)")
 
 # Inisialisasi Client OpenAI (Ambal API Key dari Environment Variable)
-OPENAI_API_KEY = os.environ.get("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")
+OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 @app.get("/", response_class=HTMLResponse)
 async def home():
