@@ -48,7 +48,6 @@ async def generate_pdf(raw_text: str = Form(...)):
     if not OPENAI_API_KEY:
         raise HTTPException(status_code=500, detail="OPENAI_API_KEY belum dikonfigurasi.")
 
-    # Pengecekan awal untuk memastikan folder template benar-benar terikut oleh Vercel
     if not TEMPLATE_DIR.exists():
         raise HTTPException(
             status_code=500, 
@@ -77,7 +76,7 @@ async def generate_pdf(raw_text: str = Form(...)):
             # Copy seluruh folder template ke temp folder
             shutil.copytree(TEMPLATE_DIR, tmpdir_path, dirs_exist_ok=True)
 
-            # Simpan data.json
+            # Simpan data.json di root folder temporary
             json_path = tmpdir_path / "data.json"
             with open(json_path, "w", encoding="utf-8") as f:
                 json.dump(extracted_json, f)
@@ -87,8 +86,11 @@ async def generate_pdf(raw_text: str = Form(...)):
             if not entrypoint_typst.exists():
                 entrypoint_typst = tmpdir_path / "main.typ"
 
-            # Kompilasi PDF
-            pdf_bytes = typst.compile(str(entrypoint_typst))
+            # Kompilasi PDF dengan menentukan 'root' ke folder temporary paling luar
+            pdf_bytes = typst.compile(
+                str(entrypoint_typst),
+                root=str(tmpdir_path)
+            )
 
         return Response(
             content=pdf_bytes, 
