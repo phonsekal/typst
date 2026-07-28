@@ -13,7 +13,7 @@ os.environ["TYPST_CACHE_DIR"] = "/tmp/typst_cache"
 app = FastAPI()
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 BASE_DIR = Path(__file__).resolve().parent.parent
-TEMPLATE_DIR = BASE_DIR / "templates" / "humble-dtu-thesis"
+TEMPLATE_DIR = BASE_DIR / "templates" / "humble-dtu-thesis_0.1.0"
 
 @app.get("/", response_class=HTMLResponse)
 async def home():
