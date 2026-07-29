@@ -60,9 +60,22 @@ async def generate_pdf(raw_text: str = Form(...)):
         client = OpenAI(api_key=OPENAI_API_KEY)
         
         prompt = f"""
-        Ekstrak data teks berikut menjadi format JSON terstruktur:
-        {raw_text}
-        """
+Ekstrak data dari teks berikut menjadi format JSON terstruktur persis sesuai skema ini:
+{{
+    "title": "Judul Utama Laporan / Dokumen",
+    "description": "Sub-judul / Deskripsi Singkat Laporan",
+    "authors": ["Nama Penyusun 1", "Nama Penyusun 2"],
+    "date": "Tanggal / Tahun Anggaran",
+    "university": "Nama Kementerian / Lembaga Utama",
+    "department": "Nama Unit Kerja / Ditjen (Singkatan)",
+    "department_full_title": "Nama Lengkap Unit Kerja / Biro",
+    "ringkasan_eksekutif": "Ringkasan isi laporan 2-3 paragraf",
+    "catatan_penting": ["Poin penting 1", "Poin penting 2"]
+}}
+
+Teks Input:
+{raw_text}
+"""
 
         response = client.chat.completions.create(
             model="gpt-4o-mini",
