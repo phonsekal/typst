@@ -4,34 +4,32 @@
 #import "preamble.typ": *
 
 #let hide-formalities = false
-// #let hide-formalities = true
 
 #let dtu-project(
-  //General details
+  // General details
   title: "", 
   description: "",
   authors: (), 
   date: none, 
-  //Department
+  // Department
   university: "", 
   department: "",
   department-full-title: "",
   address-i: "",
   address-ii: "",
   departmentwebsite: "",
-  //preface
+  // preface
   before: (),
-  //extra
+  // extra
   frontpage-input: none,
   background-color: rgb("#415891"),
   body) = {
-
+  
   // ---- 1. SET DOCUMENT FIRST (DAPATKAN URUTAN UTAMA SEBELUM ADA KONTEN) ----
-  // Memastikan tipe data authors & title aman untuk metadata dokumen
   let doc_authors = if type(authors) == array {
     authors.map(a => str(a))
   } else if authors != none {
-    str(authors)
+    (str(authors),)
   } else {
     ()
   }
@@ -55,7 +53,6 @@
   }
 
   // ---- SETUP ----
-  // Make typst look like latex
   set page(numbering: none, number-align: center, fill: none, margin: auto)
   set par(leading: 0.65em)
   set heading(numbering: none)
@@ -63,7 +60,6 @@
 
   // ---- FORMALITIES ----
   if not hide-formalities {
-    // ---- COPYRIGHT ----
     show: copyright.with(
       title: title,
       description: description,
@@ -76,18 +72,20 @@
       address-ii: address-ii,
     )
   
-    // ---- IncludePagesBefore ----
     set page(numbering: "i", number-align: center)
     counter(page).update(1)
-    include-files(before)
-  
-     //---- EMPTY PAGE ---- 
+    if before != () and "contents" in before {
+      before.contents
+    }
+    
     pagebreak()
     
   } else {
     set page(numbering: "i", number-align: center)
     counter(page).update(1)
-    before.contents
+    if before != () and "contents" in before {
+      before.contents
+    }
   }
 
   // ---- Main Report body ----
@@ -97,14 +95,12 @@
   set par(justify: true)
   set text(hyphenate: false)
 
-  // ---- CUSTOM HEADINGS
   show heading.where(level: 1): it => custom-heading(it)
 
-  //---- CUSTOM FOOTER ----
-  set page(footer: context{
-    if calc.rem(here().page(), 2) == 0 [            // even pages
+  set page(footer: context {
+    if calc.rem(here().page(), 2) == 0 [
       #text(current-h(level: 1)) #h(1fr) #counter(page).display() 
-    ] else [                                        // odd pages
+    ] else [
       #counter(page).display() #h(1fr) #text(current-h(level: 1))
     ]
   })
