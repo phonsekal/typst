@@ -49,33 +49,33 @@ async def generate_pdf(raw_text: str = Form(...)):
     try:
         client = OpenAI(api_key=OPENAI_API_KEY)
         
-prompt = f"""
-Ekstrak teks input berikut menjadi format JSON terstruktur. 
-PENTING: Ekstrak HANYA berdasarkan informasi yang ada di Teks Input. Jika suatu informasi tidak disebutkan di Teks Input, isi dengan string kosong ("").
+        prompt = f"""
+        Ekstrak teks input berikut menjadi format JSON terstruktur. 
+        PENTING: Ekstrak HANYA berdasarkan informasi yang ada di Teks Input. Jika suatu informasi tidak disebutkan di Teks Input, isi dengan string kosong ("").
 
-Skema JSON:
-{{
-    "title": "Judul Utama Laporan (diambil dari teks)",
-    "description": "Deskripsi singkat / Sub-judul (diambil dari teks)",
-    "authors": ["Nama Tim / Instansi Pelapor"],
-    "date": "Tanggal / Periode Laporan",
-    "university": "Nama Kementerian / Lembaga Utama",
-    "department": "Singkatan Unit Kerja",
-    "department_full_title": "Nama Lengkap Unit Kerja / Biro",
-    "address_i": "Alamat Baris 1",
-    "address_ii": "Alamat Baris 2",
-    "departmentwebsite": "Website Resmi",
-    "ringkasan_eksekutif": "Ringkasan isi laporan dalam 2-3 paragraf",
-    "realisasi": {{
-        "belanja_pegawai": {{"pagu": "0", "realisasi": "0", "persen": "0"}},
-        "belanja_barang": {{"pagu": "0", "realisasi": "0", "persen": "0"}}
-    }},
-    "catatan_penting": ["Poin catatan 1", "Poin catatan 2"]
-}}
+        Skema JSON:
+        {{
+            "title": "Judul Utama Laporan (diambil dari teks)",
+            "description": "Deskripsi singkat / Sub-judul (diambil dari teks)",
+            "authors": ["Nama Tim / Instansi Pelapor"],
+            "date": "Tanggal / Periode Laporan",
+            "university": "Nama Kementerian / Lembaga Utama",
+            "department": "Singkatan Unit Kerja",
+            "department_full_title": "Nama Lengkap Unit Kerja / Biro",
+            "address_i": "Alamat Baris 1",
+            "address_ii": "Alamat Baris 2",
+            "departmentwebsite": "Website Resmi",
+            "ringkasan_eksekutif": "Ringkasan isi laporan dalam 2-3 paragraf",
+            "realisasi": {{
+                "belanja_pegawai": {{"pagu": "0", "realisasi": "0", "persen": "0"}},
+                "belanja_barang": {{"pagu": "0", "realisasi": "0", "persen": "0"}}
+            }},
+            "catatan_penting": ["Poin catatan 1", "Poin catatan 2"]
+        }}
 
-Teks Input:
-{raw_text}
-"""
+        Teks Input:
+        {raw_text}
+        """
 
         response = client.chat.completions.create(
             model="gpt-4o-mini",
