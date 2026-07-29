@@ -59,8 +59,13 @@
   v(1.5em)
 
 // Author information (Aman dari error tipe data)
-  let authors-list = if type(authors) == array { authors } else if authors != none { (str(authors),) } else { () }
-
+  let authors-list = if type(authors) == type(()) { 
+  authors 
+} else if authors != none { 
+  (str(authors),) 
+} else { 
+  () 
+}
   if authors-list.len() > 0 {
     pad(
       x: 0.1em,
