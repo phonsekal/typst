@@ -49,30 +49,33 @@ async def generate_pdf(raw_text: str = Form(...)):
     try:
         client = OpenAI(api_key=OPENAI_API_KEY)
         
-        prompt = f"""
-        Ekstrak teks ini menjadi JSON terstruktur persis sesuai kunci berikut:
-        {{
-            "title": "Laporan Keuangan",
-            "description": "Tahun Anggaran 2025 (Audited)",
-            "authors": ["Sekretariat Badan Pengembangan dan Pembinaan Bahasa"],
-            "date": "29 Juli 2026",
-            "university": "",
-            "department": "Badan Bahasa",
-            "department_full_title": "Sekretariat Badan Pengembangan dan Pembinaan Bahasa",
-            "address_i": "Badan Pengembangan dan Pembinaan Bahasa",
-            "address_ii": "Jalan Daksinapati Barat IV, Rawamangun",
-            "departmentwebsite": "badanbahasa.kemendikdasmen.go.id",
-            "ringkasan_eksekutif": "Narasi ringkasan laporan 2-3 paragraf...",
-            "realisasi": {{
-                "belanja_pegawai": {{"pagu": "100.000.000", "realisasi": "95.000.000", "persen": "95"}},
-                "belanja_barang": {{"pagu": "50.000.000", "realisasi": "40.000.000", "persen": "80"}}
-            }},
-            "catatan_penting": ["Catatan 1", "Catatan 2"]
-        }}
+prompt = f"""
+Ekstrak teks input berikut menjadi format JSON terstruktur. 
+PENTING: Ekstrak HANYA berdasarkan informasi yang ada di Teks Input. Jika suatu informasi tidak disebutkan di Teks Input, isi dengan string kosong ("").
 
-        Teks Input:
-        {raw_text}
-        """
+Skema JSON:
+{{
+    "title": "Judul Utama Laporan (diambil dari teks)",
+    "description": "Deskripsi singkat / Sub-judul (diambil dari teks)",
+    "authors": ["Nama Tim / Instansi Pelapor"],
+    "date": "Tanggal / Periode Laporan",
+    "university": "Nama Kementerian / Lembaga Utama",
+    "department": "Singkatan Unit Kerja",
+    "department_full_title": "Nama Lengkap Unit Kerja / Biro",
+    "address_i": "Alamat Baris 1",
+    "address_ii": "Alamat Baris 2",
+    "departmentwebsite": "Website Resmi",
+    "ringkasan_eksekutif": "Ringkasan isi laporan dalam 2-3 paragraf",
+    "realisasi": {{
+        "belanja_pegawai": {{"pagu": "0", "realisasi": "0", "persen": "0"}},
+        "belanja_barang": {{"pagu": "0", "realisasi": "0", "persen": "0"}}
+    }},
+    "catatan_penting": ["Poin catatan 1", "Poin catatan 2"]
+}}
+
+Teks Input:
+{raw_text}
+"""
 
         response = client.chat.completions.create(
             model="gpt-4o-mini",
