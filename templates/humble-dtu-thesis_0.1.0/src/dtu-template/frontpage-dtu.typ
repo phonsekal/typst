@@ -58,16 +58,19 @@
   
   v(1.5em)
 
-  // Author information.
-  pad(
-    x: 0.1em,
-    grid(
-      gutter: 1em,
-      columns: if authors.len() == 4 {2} else {3},
-      ..authors.map(author => align(left, text(size: 20pt, weight:700)[#author])),
-    ),
-  )
+// Author information (Aman dari error tipe data)
+  let authors-list = if type(authors) == array { authors } else if authors != none { (str(authors),) } else { () }
 
+  if authors-list.len() > 0 {
+    pad(
+      x: 0.1em,
+      grid(
+        gutter: 1em,
+        columns: if authors-list.len() == 4 { 2 } else { calc.min(authors-list.len(), 3) },
+        ..authors-list.map(author => align(left, text(size: 18pt, weight: 700)[#author])),
+      ),
+    )
+  }
   //alternative authors setup
   // pad(
   //   top: 0.5em,
