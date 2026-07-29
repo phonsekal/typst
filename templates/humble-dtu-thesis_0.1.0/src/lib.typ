@@ -25,8 +25,21 @@
   frontpage-input: none,
   background-color: rgb("#415891"),
   body) = {
+
+  // ---- 1. SET DOCUMENT FIRST (DAPATKAN URUTAN UTAMA SEBELUM ADA KONTEN) ----
+  // Memastikan tipe data authors & title aman untuk metadata dokumen
+  let doc_authors = if type(authors) == array {
+    authors.map(a => str(a))
+  } else if authors != none {
+    str(authors)
+  } else {
+    ()
+  }
   
-  // ---- FRONTPAGE ----
+  set document(author: doc_authors, title: str(title))
+  set text(size: 10pt, fill: black)
+
+  // ---- 2. FRONTPAGE ----
   if frontpage-input == none {
     show: frontpage.with(
       title: title,
@@ -42,11 +55,7 @@
   }
 
   // ---- SETUP ----
-  // Set the document's basic properties.
-  set text(size: 10pt, fill: black)
-  set document(author: authors, title: title)
-  
-  //make typst look like latex
+  // Make typst look like latex
   set page(numbering: none, number-align: center, fill: none, margin: auto)
   set par(leading: 0.65em)
   set heading(numbering: none)
@@ -93,9 +102,9 @@
 
   //---- CUSTOM FOOTER ----
   set page(footer: context{
-    if calc.rem(here().page(), 2) == 0 [           // even pages
+    if calc.rem(here().page(), 2) == 0 [            // even pages
       #text(current-h(level: 1)) #h(1fr) #counter(page).display() 
-    ] else [                                       //odd pages
+    ] else [                                        // odd pages
       #counter(page).display() #h(1fr) #text(current-h(level: 1))
     ]
   })
