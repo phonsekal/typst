@@ -1,4 +1,3 @@
-// State global untuk menyimpan daftar akronim
 #let acrostiche-state = state("acrostiche-state", (
   acronyms: (:),
   used: ()
@@ -40,7 +39,7 @@
         str(def)
       }
     } else {
-      text(fill: red, "[" + acr + "?]")
+      text(fill: rgb("ff0000"), "[" + acr + "?]")
     }
   }
 }
@@ -62,36 +61,41 @@
   })
 }
 
-#let acr(acr, plural: false) = {
+#let acr(acr_name, plural: false) = {
   context {
     let st = acrostiche-state.get()
-    if acr in st.used {
-      display-short(acr, plural: plural)
+    if acr_name in st.used {
+      display-short(acr_name, plural: plural)
     } else {
-      display-def(acr, plural: plural)
-      [ (]#display-short(acr, plural: plural)[)]
-      mark-acr-used(acr)
+      let def_val = display-def(acr_name, plural: plural)
+      let short_val = display-short(acr_name, plural: plural)
+      mark-acr-used(acr_name)
+      [#def_val (#short_val)]
     }
   }
 }
 
 #let acrpl(acronym) = { acr(acronym, plural: true) }
-#let acrfull(acr) = {
-  display-def(acr, plural: false)
-  [ (]#display-short(acr, plural: false)[)]
-  mark-acr-used(acr)
-}
-#let acrfullpl(acr) = {
-  display-def(acr, plural: true)
-  [ (]#display-short(acr, plural: true)[)]
-  mark-acr-used(acr)
+
+#let acrfull(acr_name) = {
+  let def_val = display-def(acr_name, plural: false)
+  let short_val = display-short(acr_name, plural: false)
+  mark-acr-used(acr_name)
+  [#def_val (#short_val)]
 }
 
-#let reset-acronym(acr) = {
+#let acrfullpl(acr_name) = {
+  let def_val = display-def(acr_name, plural: true)
+  let short_val = display-short(acr_name, plural: true)
+  mark-acr-used(acr_name)
+  [#def_val (#short_val)]
+}
+
+#let reset-acronym(acr_name) = {
   acrostiche-state.update(state => {
     let new-used = ()
     for item in state.used {
-      if item != acr {
+      if item != acr_name {
         new-used.push(item)
       }
     }
@@ -107,21 +111,21 @@
   })
 }
 
-// Alias fungsi agar kompatibel dengan penulisan lama
-#let acrf(acr) = acrfull(acr)
-#let acrfpl(acr) = acrfullpl(acr)
-#let racr(acr) = reset-acronym(acr)
+// Alias fungsi
+#let acrf(a) = acrfull(a)
+#let acrfpl(a) = acrfullpl(a)
+#let racr(a) = reset-acronym(a)
 #let raacr() = reset-all-acronyms()
 #let acresetall = reset-all-acronyms
 #let ac = acr
-#let acp(acro) = acr(acro, plural: true)
-#let acl(acro) = display-def(acro, plural: false)
-#let aclp(acro) = display-def(acro, plural: true)
-#let acf(acro) = acrf(acro)
-#let acfp(acro) = acrfpl(acro)
-#let acs(acro) = display-short(acro, plural: false)
-#let acsp(acro) = display-short(acro, plural: true)
-#let acused(acr) = mark-acr-used(acr)
+#let acp(a) = acr(a, plural: true)
+#let acl(a) = display-def(a, plural: false)
+#let aclp(a) = display-def(a, plural: true)
+#let acf(a) = acrf(a)
+#let acfp(a) = acrfpl(a)
+#let acs(a) = display-short(a, plural: false)
+#let acsp(a) = display-short(a, plural: true)
+#let acused(a) = mark-acr-used(a)
 
 #let print-index(level: 1, numbering: none, outlined: false, sorted: "") = {
   context {
@@ -131,9 +135,8 @@
       keys = keys.sorted()
     }
     for k in keys {
-      [ - *#k*: ]
-      display-def(k)
-      [\ ]
+      let def_val = display-def(k)
+      [ - *#k*: #def_val \ ]
     }
   }
 }
